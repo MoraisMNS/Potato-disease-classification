@@ -1,148 +1,159 @@
-import { useState, useEffect } from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import Typography from "@material-ui/core/Typography";
-import Avatar from "@material-ui/core/Avatar";
-import Container from "@material-ui/core/Container";
-import React from "react";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import { Paper, CardActionArea, CardMedia, Grid, TableContainer, Table, TableBody, TableHead, TableRow, TableCell, Button, CircularProgress } from "@material-ui/core";
+/** @jsxImportSource @emotion/react */
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import React, { useState, useEffect } from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Avatar,
+  Container,
+  Card,
+  CardContent,
+  Paper,
+  CardActionArea,
+  CardMedia,
+  Grid,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Button,
+  CircularProgress,
+} from "@mui/material";
+import { useDropzone } from "react-dropzone";
+import Clear from "@mui/icons-material/Clear";
 import cblogo from "./cblogo.PNG";
 import image from "./bg.png";
-import { DropzoneArea } from 'material-ui-dropzone';
-import { common } from '@material-ui/core/colors';
-import Clear from '@material-ui/icons/Clear';
+import axios from "axios";
 
 
 
-
-const ColorButton = withStyles((theme) => ({
-  root: {
-    color: theme.palette.getContrastText(common.white),
-    backgroundColor: common.white,
-    '&:hover': {
-      backgroundColor: '#ffffff7a',
-    },
-  },
-}))(Button);
-const axios = require("axios").default;
-
-const useStyles = makeStyles((theme) => ({
-  grow: {
-    flexGrow: 1,
-  },
-  clearButton: {
-    width: "-webkit-fill-available",
-    borderRadius: "15px",
-    padding: "15px 22px",
-    color: "#000000a6",
-    fontSize: "20px",
-    fontWeight: 900,
-  },
-  root: {
-    maxWidth: 345,
-    flexGrow: 1,
-  },
-  media: {
-    height: 400,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    margin: 'auto',
-    maxWidth: 500,
-  },
-  gridContainer: {
-    justifyContent: "center",
-    padding: "4em 1em 0 1em",
-  },
-  mainContainer: {
-    backgroundImage: `url(${image})`,
-    backgroundRepeat: 'no-repeat',
-    backgroundPosition: 'center',
-    backgroundSize: 'cover',
-    height: "93vh",
-    marginTop: "8px",
-  },
-  imageCard: {
-    margin: "auto",
-    maxWidth: 400,
-    height: 500,
-    backgroundColor: 'transparent',
-    boxShadow: '0px 9px 70px 0px rgb(0 0 0 / 30%) !important',
-    borderRadius: '15px',
-  },
-  imageCardEmpty: {
-    height: 'auto',
-  },
-  noImage: {
-    margin: "auto",
-    width: 400,
-    height: "400 !important",
-  },
-  input: {
-    display: 'none',
-  },
-  uploadIcon: {
-    background: 'white',
-  },
-  tableContainer: {
-    backgroundColor: 'transparent !important',
-    boxShadow: 'none !important',
-  },
-  table: {
-    backgroundColor: 'transparent !important',
-  },
-  tableHead: {
-    backgroundColor: 'transparent !important',
-  },
-  tableRow: {
-    backgroundColor: 'transparent !important',
-  },
-  tableCell: {
-    fontSize: '22px',
-    backgroundColor: 'transparent !important',
-    borderColor: 'transparent !important',
-    color: '#000000a6 !important',
-    fontWeight: 'bolder',
-    padding: '1px 24px 1px 16px',
-  },
-  tableCell1: {
-    fontSize: '14px',
-    backgroundColor: 'transparent !important',
-    borderColor: 'transparent !important',
-    color: '#000000a6 !important',
-    fontWeight: 'bolder',
-    padding: '1px 24px 1px 16px',
-  },
-  tableBody: {
-    backgroundColor: 'transparent !important',
-  },
-  text: {
-    color: 'white !important',
-    textAlign: 'center',
-  },
-  buttonGrid: {
-    maxWidth: "416px",
-    width: "100%",
-  },
-  detail: {
-    backgroundColor: 'white',
-    display: 'flex',
-    justifyContent: 'center',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  appbar: {
-    background: '#be6a77',
-    boxShadow: 'none',
-    color: 'white'
-  },
-  loader: {
-    color: '#be6a77 !important',
+const ColorButton = styled(Button)`
+  color: ${props => props.theme.palette.getContrastText('#fff')};
+  background-color: #fff;
+  &:hover {
+    background-color: #ffffff7a;
   }
-}));
+`;
+
+const useStyles = (theme) => ({
+  grow: css`
+    flex-grow: 1;
+  `,
+  clearButton: css`
+    width: -webkit-fill-available;
+    border-radius: 15px;
+    padding: 15px 22px;
+    color: #000000a6;
+    font-size: 20px;
+    font-weight: 900;
+  `,
+  root: css`
+    max-width: 345;
+    flex-grow: 1;
+  `,
+  media: css`
+    height: 400px;
+  `,
+  paper: css`
+    padding: theme.spacing(2),
+    margin: auto;
+    max-width: 500px;
+  `,
+  gridContainer: css`
+    justify-content: center;
+    padding: 4em 1em 0 1em;
+  `,
+  mainContainer: css`
+    background-image: url(${image});
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    height: 93vh;
+    margin-top: 8px;
+  `,
+  imageCard: css`
+    margin: auto;
+    max-width: 400px;
+    height: 500px;
+    background-color: transparent;
+    box-shadow: 0px 9px 70px 0px rgb(0 0 0 / 30%) !important;
+    border-radius: 15px;
+  `,
+  imageCardEmpty: css`
+    height: auto;
+  `,
+  noImage: css`
+    margin: auto;
+    width: 400px;
+    height: 400px !important;
+  `,
+  input: css`
+    display: none;
+  `,
+  uploadIcon: css`
+    background: white;
+  `,
+  tableContainer: css`
+    background-color: transparent !important;
+    box-shadow: none !important;
+  `,
+  table: css`
+    background-color: transparent !important;
+  `,
+  tableHead: css`
+    background-color: transparent !important;
+  `,
+  tableRow: css`
+    background-color: transparent !important;
+  `,
+  tableCell: css`
+    font-size: 22px;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: #000000a6 !important;
+    font-weight: bolder;
+    padding: 1px 24px 1px 16px;
+  `,
+  tableCell1: css`
+    font-size: 14px;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: #000000a6 !important;
+    font-weight: bolder;
+    padding: 1px 24px 1px 16px;
+  `,
+  tableBody: css`
+    background-color: transparent !important;
+  `,
+  text: css`
+    color: white !important;
+    text-align: center;
+  `,
+  buttonGrid: css`
+    max-width: 416px;
+    width: 100%;
+  `,
+  detail: css`
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+  `,
+  appbar: css`
+    background: #be6a77;
+    box-shadow: none;
+    color: white;
+  `,
+  loader: css`
+    color: #be6a77 !important;
+  `,
+});
+
 export const ImageUpload = () => {
   const classes = useStyles();
   const [selectedFile, setSelectedFile] = useState();
@@ -166,7 +177,8 @@ export const ImageUpload = () => {
       }
       setIsloading(false);
     }
-  }
+  };
+  
 
   const clearData = () => {
     setData(null);
@@ -204,24 +216,29 @@ export const ImageUpload = () => {
     setImage(true);
   };
 
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop: onSelectFile,
+    accept: "image/*",
+  });
+
   if (data) {
     confidence = (parseFloat(data.confidence) * 100).toFixed(2);
   }
 
   return (
     <React.Fragment>
-      <AppBar position="static" className={classes.appbar}>
+      <AppBar position="static" css={classes.appbar}>
         <Toolbar>
-          <Typography className={classes.title} variant="h6" noWrap>
-            CodeBasics: Potato Disease Classification
+          <Typography css={classes.title} variant="h6" noWrap>
+             Potato Disease Classification
           </Typography>
-          <div className={classes.grow} />
+          <div css={classes.grow} />
           <Avatar src={cblogo}></Avatar>
         </Toolbar>
       </AppBar>
-      <Container maxWidth={false} className={classes.mainContainer} disableGutters={true}>
+      <Container maxWidth={false} css={classes.mainContainer} disableGutters={true}>
         <Grid
-          className={classes.gridContainer}
+          css={classes.gridContainer}
           container
           direction="row"
           justifyContent="center"
@@ -229,60 +246,88 @@ export const ImageUpload = () => {
           spacing={2}
         >
           <Grid item xs={12}>
-            <Card className={`${classes.imageCard} ${!image ? classes.imageCardEmpty : ''}`}>
-              {image && <CardActionArea>
-                <CardMedia
-                  className={classes.media}
-                  image={preview}
-                  component="image"
-                  title="Contemplative Reptile"
-                />
-              </CardActionArea>
-              }
-              {!image && <CardContent className={classes.content}>
-                <DropzoneArea
-                  acceptedFiles={['image/*']}
-                  dropzoneText={"Drag and drop an image of a potato plant leaf to process"}
-                  onChange={onSelectFile}
-                />
-              </CardContent>}
-              {data && <CardContent className={classes.detail}>
-                <TableContainer component={Paper} className={classes.tableContainer}>
-                  <Table className={classes.table} size="small" aria-label="simple table">
-                    <TableHead className={classes.tableHead}>
-                      <TableRow className={classes.tableRow}>
-                        <TableCell className={classes.tableCell1}>Label:</TableCell>
-                        <TableCell align="right" className={classes.tableCell1}>Confidence:</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody className={classes.tableBody}>
-                      <TableRow className={classes.tableRow}>
-                        <TableCell component="th" scope="row" className={classes.tableCell}>
-                          {data.class}
-                        </TableCell>
-                        <TableCell align="right" className={classes.tableCell}>{confidence}%</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </CardContent>}
-              {isLoading && <CardContent className={classes.detail}>
-                <CircularProgress color="secondary" className={classes.loader} />
-                <Typography className={classes.title} variant="h6" noWrap>
-                  Processing
-                </Typography>
-              </CardContent>}
+            <Card css={[classes.imageCard, !image && classes.imageCardEmpty]}>
+              {image && (
+                <CardActionArea>
+                  <CardMedia
+                    css={classes.media}
+                    image={preview}
+                    component="img"
+                    title="Contemplative Reptile"
+                  />
+                </CardActionArea>
+              )}
+              {!image && (
+                <CardContent css={classes.content}>
+                  <div
+                    {...getRootProps()}
+                    style={{
+                      border: "2px dashed #eeeeee",
+                      padding: "20px",
+                      textAlign: "center",
+                    }}
+                  >
+                    <input {...getInputProps()} />
+                    <p>
+                      Drag 'n' drop an image of a potato plant leaf here, or click
+                      to select one
+                    </p>
+                  </div>
+                </CardContent>
+              )}
+              {data && (
+                <CardContent css={classes.detail}>
+                  <TableContainer component={Paper} css={classes.tableContainer}>
+                    <Table css={classes.table} size="small" aria-label="simple table">
+                      <TableHead css={classes.tableHead}>
+                        <TableRow css={classes.tableRow}>
+                          <TableCell css={classes.tableCell1}>Label:</TableCell>
+                          <TableCell align="right" css={classes.tableCell1}>
+                            Confidence:
+                          </TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody css={classes.tableBody}>
+                        <TableRow css={classes.tableRow}>
+                          <TableCell component="th" scope="row" css={classes.tableCell}>
+                            {data.class}
+                          </TableCell>
+                          <TableCell align="right" css={classes.tableCell}>
+                            {confidence}%
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </CardContent>
+              )}
+              {isLoading && (
+                <CardContent css={classes.detail}>
+                  <CircularProgress color="secondary" css={classes.loader} />
+                  <Typography css={classes.title} variant="h6" noWrap>
+                    Processing
+                  </Typography>
+                </CardContent>
+              )}
             </Card>
           </Grid>
-          {data &&
-            <Grid item className={classes.buttonGrid} >
-
-              <ColorButton variant="contained" className={classes.clearButton} color="primary" component="span" size="large" onClick={clearData} startIcon={<Clear fontSize="large" />}>
+          {data && (
+            <Grid item css={classes.buttonGrid}>
+              <ColorButton
+                variant="contained"
+                css={classes.clearButton}
+                color="primary"
+                component="span"
+                size="large"
+                onClick={clearData}
+                startIcon={<Clear fontSize="large" />}
+              >
                 Clear
               </ColorButton>
-            </Grid>}
-        </Grid >
-      </Container >
-    </React.Fragment >
+            </Grid>
+          )}
+        </Grid>
+      </Container>
+    </React.Fragment>
   );
 };
