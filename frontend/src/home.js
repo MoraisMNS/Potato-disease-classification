@@ -25,8 +25,8 @@
   } from "@mui/material";
   import { useDropzone } from "react-dropzone";
   import Clear from "@mui/icons-material/Clear";
-  import cblogo from "./cblogo.PNG";
-  import image from "./bg.png";
+  import cblogo from "./navbar.jpg";
+  import image from "./backimg.jpg";
   import axios from "axios";
   import { useTheme } from '@mui/material/styles';
 
